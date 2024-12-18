@@ -1,21 +1,59 @@
 name: Super-Linter
 
 # Event being monitored
-on: push
+on:
+  push: null
+  pull_request: null
 
 # After event happens jobs are run
 jobs:
   super-lint:
-    # Name of the job
+    #Running on this container on git
     runs-on: ubuntu-latest 
     # Steps
     steps:
       # First step is to checkout code
       - name: Checkout code
-        uses: actions/checkout@v2
-      # Then it runs this after checking out code
+        uses: actions/checkout@v4
+        with:
+          # Super-linter needs the full git history to get the
+          # List of files that changed across commits
+          fetch-depth: 0
       - name: Super-Linter
         uses: super-linter/super-linter@v7.2.1
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #uses Super-linter to automatically fix linting and formatting issues, commit changes in the current branch, 
+  #and push commits to the remote branch tracking the current branch whenever a pull request is created or updated
+  fix-lint-issues:
+    permissions:
+      #To write linting fixes
+      contents: write
+      #To write Super-linter status checks
+      statuses: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Super-Linter
+        uses: super-linter/super-linter@v7.2.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          #Set your fix mode variables to true
+          FIX_SHELL_SHFMT: true
+          FIX_YAML_PRETTIER: true
+      - name: Commit and push linting fixes
+        # Run only on:
+        # - Pull requests
+        # - Not on the default branch
+        if: >
+          github.event_name == 'pull_request' &&
+          github.ref_name != github.event.repository.default_branch
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: ${{ github.event.pull_request.head.ref || github.head_ref || github.ref }}
+          commit_message: "chore: fix linting issues"
+          commit_user_name: super-linter
+          commit_user_email: super-linter@super-linter.dev
