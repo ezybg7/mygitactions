@@ -27,6 +27,10 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false  #Only validate changed files
+          FILES_TO_LINT: "**/*"  #Restrict linting to files in the repository
+          IGNORE_GITIGNORED_FILES: true  #Skip files ignored by .gitignore
+          
   #uses Super-linter to automatically fix linting and formatting issues, commit changes in the current branch, 
   #and push commits to the remote branch tracking the current branch whenever a pull request is created or updated
   fix-lint-issues:
