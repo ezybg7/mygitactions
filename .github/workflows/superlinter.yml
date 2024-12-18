@@ -14,8 +14,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       # Then it runs this after checking out code
-      - name: Run Super-Linter
-        uses: github/super-linter@v3
+      - name: Super-Linter
+        uses: super-linter/super-linter@v7.2.1
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
