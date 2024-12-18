@@ -10,6 +10,9 @@ jobs:
   super-lint:
     #Running on this container on git
     runs-on: ubuntu-latest 
+    permissions:
+      contents: read
+      statuses: write
     # Steps
     steps:
       # First step is to checkout code
