@@ -1,39 +1,13 @@
 name: Super-Linter
 
-# Event being monitored
+#Event being monitored
 on:
   push: null
   pull_request: null
 
-# After event happens jobs are run
+#After event happens jobs are run
 jobs:
-  super-lint:
-    #Running on this container on git
-    runs-on: ubuntu-latest 
-    permissions:
-      contents: read
-      statuses: write
-    # Steps
-    steps:
-      # First step is to checkout code
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          # Super-linter needs the full git history to get the
-          # List of files that changed across commits
-          fetch-depth: 0
-      - name: Super-Linter
-        uses: super-linter/super-linter@v7.2.1
-        env:
-          DEFAULT_BRANCH: main
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_CHECKOV: false
-          VALIDATE_YAML_PRETTIER: false
-          VALIDATE_ALL_CODEBASE: false  #Only validate changed files
-          FILES_TO_LINT: "**/*"  #Restrict linting to files in the repository
-          IGNORE_GITIGNORED_FILES: true  #Skip files ignored by .gitignore
-          
-  #uses Super-linter to automatically fix linting and formatting issues, commit changes in the current branch, 
+  #Uses Super-linter to automatically fix linting and formatting issues, commit changes in the current branch 
   #and push commits to the remote branch tracking the current branch whenever a pull request is created or updated
   fix-lint-issues:
     permissions:
