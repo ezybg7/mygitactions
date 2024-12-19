@@ -53,6 +53,12 @@ jobs:
           #Set your fix mode variables to true
           FIX_SHELL_SHFMT: true
           FIX_YAML_PRETTIER: true
+          VALIDATE_CHECKOV: false
+          VALIDATE_YAML_PRETTIER: false
+          VALIDATE_ALL_CODEBASE: false  #Only validate changed files
+          FILES_TO_LINT: "**/*"  #Restrict linting to files in the repository
+          IGNORE_GITIGNORED_FILES: true  #Skip files ignored by .gitignore
+          
       - name: Commit and push linting fixes
         # Run only on:
         # - Pull requests
